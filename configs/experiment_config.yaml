@@ -1,0 +1,49 @@
+# VAE Knowledge Compression Experiment Configuration
+
+data:
+  n_samples: 5000
+  n_features: 50
+  n_seeds: 5                # replicates per latent dim
+  noise_level: 0.15
+
+  # Generative factors — each defines a signal planted in the data
+  factors:
+    - name: "F1_dominant"
+      n_features_affected: 20    # out of 50
+      variance: 2.0
+      prevalence: 1.0            # present in all samples
+    - name: "F2_secondary"
+      n_features_affected: 12
+      variance: 1.2
+      prevalence: 1.0
+    - name: "F3_minority_signal"
+      n_features_affected: 8
+      variance: 0.8
+      prevalence: 1.0
+    - name: "F4_rare_subtype"
+      n_features_affected: 6
+      variance: 1.5
+      prevalence: 0.05           # present in only 5% of samples
+    - name: "F5_correlated_pair"
+      n_features_affected: 4
+      variance: 1.0
+      prevalence: 1.0
+
+model:
+  hidden_dims: [128, 64]         # encoder/decoder hidden layer sizes
+  activation: "relu"
+  dropout: 0.0
+
+training:
+  epochs: 100
+  batch_size: 128
+  learning_rate: 0.001
+  beta: 1.0                      # KL weight (1.0 = standard VAE)
+  early_stopping_patience: 15
+
+experiment:
+  # Latent dims to sweep — from full (50) down to 1
+  latent_dims: [50, 40, 30, 20, 15, 10, 8, 5, 3, 2, 1]
+  results_dir: "results"
+  figures_dir: "figures"
+  random_seed: 42
