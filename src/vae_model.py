@@ -111,7 +111,8 @@ class VAE(nn.Module):
         ELBO = reconstruction loss + beta * KL divergence.
         Returns total loss, recon loss, and KL loss separately for tracking.
         """
-        recon_loss = nn.functional.mse_loss(x_recon, x, reduction="mean")
+        recon_loss = nn.functional.mse_loss(x_recon, x, reduction="none")
+        recon_loss = torch.mean(torch.sum(recon_loss, dim=1))
         # KL divergence per dimension, summed over dims, mean over batch
         kl_loss = -0.5 * torch.mean(
             torch.sum(1 + logvar - mu.pow(2) - logvar.exp(), dim=1)
